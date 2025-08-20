@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Simple Java Web App</title>
+</head>
+<body>
+    <h1>Welcome to Simple Java Web App</h1>
+    <form action="/submit" method="post">
+        <label for="name">Enter your name:</label>
+        <input type="text" name="name" id="name" required>
+        <button type="submit">Submit</button>
+    </form>
+
+    <div th:if="${name}">
+        <h2 th:text="'Hello, ' + ${name} + '! Your submission was received.'"></h2>
+    </div>
+</body>
+</html>
