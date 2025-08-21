@@ -5,6 +5,7 @@ pipeline {
         EC2 = "ec2-user@3.15.31.44"
         APP_DIR = "/home/ec2-user/simple-java-app"
         S3_BUCKET = "sanjana-terraform-bucket-09843"
+        WORKSPACE_DIR = "${env.WORKSPACE}"
     }
 
     
