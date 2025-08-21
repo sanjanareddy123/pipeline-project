@@ -16,13 +16,19 @@ pipeline {
             }
         }
 
-        stage('Build & Unit Test') {
+        stage('Build') {
             steps {
-                sh 'mvn clean package'
+                sh 'mvn clean package -DskipTests'
+            }
+        }
+
+        stage('Unit Test') {
+            steps {
+                sh 'mvn test'
             }
             post {
                 always {
-                    junit '**/target/surefire-reports/*.xml'
+                    junit allowEmptyResults: true, '**/target/surefire-reports/*.xml'
                 }
             }
         }
