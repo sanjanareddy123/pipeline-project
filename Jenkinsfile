@@ -11,7 +11,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'main', 
+                git branch: 'feature', 
                     url: 'https://github.com/sanjanareddy123/pipeline-project'
             }
         }
