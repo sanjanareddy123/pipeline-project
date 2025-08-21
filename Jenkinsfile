@@ -36,7 +36,9 @@ pipeline {
         stage('Upload Artifact to S3') {
             steps {
                 withAWS(credentials: 'aws-creds', region: 'us-east-1') {
-                    bat "aws s3 cp target\\simple-java-app-1.0.0.jar s3://${S3_BUCKET}/simple-java-app.jar"
+                    bat """
+                    aws s3 cp "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\ci-cd pipeline\\target\\simple-java-app-1.0.0.jar" s3://sanjana-terraform-bucket-09843/simple-java-app.jar
+                    """
                 }
             }
         }
@@ -61,4 +63,5 @@ pipeline {
         }
     }
 }
+
 
