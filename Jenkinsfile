@@ -7,6 +7,7 @@ pipeline {
         S3_BUCKET = "sanjana-terraform-bucket-09843"
     }
 
+    
     stages {
 
         stage('Checkout') {
@@ -36,9 +37,14 @@ pipeline {
         stage('Upload Artifact to S3') {
             steps {
                 withAWS(credentials: 'aws-creds', region: 'us-east-1') {
-                    bat """
-                    "C:\\Program Files\\Amazon\\AWSCLI\\bin\\aws.exe" s3 cp "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\ci-cd pipeline\\target\\simple-java-app-1.0.0.jar" s3://sanjana-terraform-bucket-09843/simple-java-app.jar
-                    """
+                    // Print the workspace path (debugging)
+                    bat 'echo Workspace: %WORKSPACE%'
+
+                    // Check the file exists
+                    bat 'dir "%WORKSPACE%\\target"'
+
+                    // Upload the artifact
+                    bat "\"C:\\Program Files\\Amazon\\AWSCLI\\bin\\aws.exe\" s3 cp \"%WORKSPACE%\\target\\simple-java-app-1.0.0.jar\" s3://%S3_BUCKET%/simple-java-app.jar"
                 }
             }
         }
@@ -46,9 +52,11 @@ pipeline {
         stage('Deploy to EC2') {
             steps {
                 sshagent(['d16647f4-f206-4c43-ac93-10b89626c82c']) {
-                    // Combine SSH commands into one line using && for Windows bat
-                    bat "ssh ${EC2} \"mkdir -p ${APP_DIR} && pkill -f app.jar || true && nohup java -jar ${APP_DIR}/app.jar > app.log 2>&1 &\""
-                    bat "scp target\\simple-java-app-1.0.0.jar ${EC2}:${APP_DIR}/app.jar"
+                    // Copy artifact to EC2
+                    bat "scp \"%WORKSPACE%\\target\\simple-java-app-1.0.0.jar\" %EC2%:%APP_DIR%/app.jar"
+
+                    // Restart app on EC2
+                    bat "ssh %EC2% \"mkdir -p %APP_DIR% && pkill -f app.jar || true && nohup java -jar %APP_DIR%/app.jar > app.log 2>&1 &\""
                 }
             }
         }
@@ -63,5 +71,3 @@ pipeline {
         }
     }
 }
-
-
