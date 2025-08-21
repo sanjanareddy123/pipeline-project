@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        EC2 = "ec2-user@3.15.31.44"
+        EC2 = "ec2-user@3.145.54.172"
         APP_DIR = "/home/ec2-user/simple-java-app"
         S3_BUCKET = "sanjana-terraform-bucket-09843"
         AWS_REGION = 'us-east-1'
