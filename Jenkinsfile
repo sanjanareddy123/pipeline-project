@@ -16,22 +16,23 @@ pipeline {
             }
         }
 
-        stage('Build') {
-            steps {
-                sh 'mvn clean package -DskipTests'
-            }
-        }
+       stage('Build') {
+    steps {
+        bat 'mvn clean package -DskipTests'
+    }
+}
 
-        stage('Unit Test') {
-            steps {
-                sh 'mvn test'
-            }
-            post {
-                always {
-                     junit testResults: '**/target/surefire-reports/*.xml', allowEmptyResults: true
-                }
-            }
+stage('Unit Test') {
+    steps {
+        bat 'mvn test'
+    }
+    post {
+        always {
+            junit testResults: '**/target/surefire-reports/*.xml', allowEmptyResults: true
         }
+    }
+}
+
 
         stage('Upload Artifact to S3') {
             steps {
