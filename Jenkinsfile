@@ -46,7 +46,8 @@ pipeline {
                     bat 'dir "%WORKSPACE%\\target"'
 
                     // Upload the artifact
-                    bat "\"C:\\Program Files\\Amazon\\AWSCLI\\bin\\aws.exe\" s3 cp \"%WORKSPACE%\\target\\simple-java-app-1.0.0.jar\" s3://%S3_BUCKET%/simple-java-app.jar"
+                    bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe" s3 cp "%WORKSPACE%\\target\\simple-java-app-1.0.0.jar" s3://%S3_BUCKET%/simple-java-app.jar --region us-east-1'
+
                 }
             }
         }
