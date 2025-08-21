@@ -37,7 +37,7 @@ pipeline {
             steps {
                 withAWS(credentials: 'aws-creds', region: 'us-east-1') {
                     bat """
-                    aws s3 cp "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\ci-cd pipeline\\target\\simple-java-app-1.0.0.jar" s3://sanjana-terraform-bucket-09843/simple-java-app.jar
+                    "C:\\Program Files\\Amazon\\AWSCLI\\bin\\aws.exe" s3 cp "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\ci-cd pipeline\\target\\simple-java-app-1.0.0.jar" s3://sanjana-terraform-bucket-09843/simple-java-app.jar
                     """
                 }
             }
