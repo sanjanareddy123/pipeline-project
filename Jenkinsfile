@@ -18,13 +18,13 @@ pipeline {
 
         stage('Build') {
             steps {
-                bat 'mvn clean package -DskipTests'
+                sh 'mvn clean package -DskipTests'
             }
         }
 
         stage('Unit Test') {
             steps {
-                bat 'mvn test'
+                sh 'mvn test'
             }
             post {
                 always {
@@ -36,7 +36,7 @@ pipeline {
         stage('Upload Artifact to S3') {
             steps {
                 withAWS(credentials: 'aws-creds', region: 'us-east-1') {
-                    bat "aws s3 cp target\\simple-java-app-1.0.0.jar s3://${S3_BUCKET}/simple-java-app.jar"
+                    sh "aws s3 cp target/simple-java-app-1.0.0.jar s3://${S3_BUCKET}/simple-java-app.jar"
                 }
             }
         }
@@ -44,9 +44,12 @@ pipeline {
         stage('Deploy to EC2') {
             steps {
                 sshagent(['d16647f4-f206-4c43-ac93-10b89626c82c']) {
-                    // Combine SSH commands into one line using && for Windows bat
-                    bat "ssh ${EC2} \"mkdir -p ${APP_DIR} && pkill -f app.jar || true && nohup java -jar ${APP_DIR}/app.jar > app.log 2>&1 &\""
-                    bat "scp target\\simple-java-app-1.0.0.jar ${EC2}:${APP_DIR}/app.jar"
+                    // Ensure app dir exists, stop old process, copy new jar, restart app
+                    sh """
+                        ssh ${EC2} "mkdir -p ${APP_DIR} && pkill -f app.jar || true"
+                        scp target/simple-java-app-1.0.0.jar ${EC2}:${APP_DIR}/app.jar
+                        ssh ${EC2} "nohup java -jar ${APP_DIR}/app.jar > ${APP_DIR}/app.log 2>&1 &"
+                    """
                 }
             }
         }
@@ -61,4 +64,3 @@ pipeline {
         }
     }
 }
-
